@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WOLFLIX Masterclass: The Return (B1)</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        hero: ['Cinzel', 'serif'],
+                        tech: ['Orbitron', 'sans-serif'],
+                        base: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* ==================================================================
+           DYNAMIC THEME ENGINE V3.0: THE RETURN vs THE AMBUSH
+           ================================================================== */
+        
+        :root {
+            /* Theme 1: The Return (Royal Blue, Gold) */
+            --bg-top: #020617; 
+            --bg-bot: #0f172a;
+            --panel-bg: rgba(2, 6, 23, 0.85);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #fbbf24; /* Gold */
+            --accent-glow: rgba(251, 191, 36, 0.5);
+            --secondary: #3b82f6; /* Royal Blue */
+            --border-color: #1e3a8a; /* Deep Blue */
+            --btn-text: #000000;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+            --bg-image: url('https://images.unsplash.com/photo-1590494498305-673e4a2862d7?q=80&w=2070&auto=format&fit=crop'); /* Sea */
+        }
+
+        body.theme-ambush {
+            /* Theme 2: The Ambush (Pitch Black, Blood Red, Fire) */
+            --bg-top: #000000;
+            --bg-bot: #110000;
+            --panel-bg: rgba(0, 0, 0, 0.95); 
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #ef4444; /* Pure Red */
+            --accent-glow: rgba(239, 68, 68, 0.7);
+            --secondary: #991b1b; /* Dark Red */
+            --border-color: #7f1d1d; 
+            --btn-text: #ffffff;
+            --shadow: 0 0 40px rgba(255, 0, 0, 0.5);
+            --bg-image: url('https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=2070&auto=format&fit=crop'); /* Blood/Red */
+        }
+
+        body {
+            background-color: var(--bg-bot);
+            background-image: linear-gradient(135deg, var(--bg-top), var(--bg-bot));
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.8s ease-in-out;
+            overflow: hidden;
+            margin: 0;
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        /* Ambient Background Image */
+        .ambient-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: 0;
+            pointer-events: none;
+            transition: background-image 2s ease, opacity 2s ease;
+            filter: grayscale(40%) sepia(30%) hue-rotate(200deg);
+        }
+        body.theme-ambush .ambient-bg {
+            opacity: 0.25;
+            animation: fireFlicker 4s infinite;
+        }
+
+        @keyframes fireFlicker {
+            0%, 100% { filter: brightness(1) sepia(50%) hue-rotate(340deg); }
+            50% { filter: brightness(1.5) sepia(50%) hue-rotate(340deg); }
+        }
+
+        /* Typography */
+        h1, h2, h3, .font-hero { font-family: 'Cinzel', serif; }
+        .font-tech { font-family: 'Orbitron', sans-serif; }
+
+        /* Component Styles */
+        .tf-panel {
+            background: var(--panel-bg); backdrop-filter: blur(12px);
+            border: 2px solid var(--border-color); box-shadow: var(--shadow);
+            border-radius: 1.5rem; transition: all 0.4s ease;
+        }
+
+        .tf-btn {
+            background-color: var(--accent); color: var(--btn-text);
+            font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 3px;
+            box-shadow: 0 10px 25px var(--accent-glow); transition: all 0.3s ease;
+            border-radius: 0.75rem; border: none; cursor: pointer;
+        }
+        .tf-btn:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 15px 35px var(--accent-glow); filter: brightness(1.15); }
+        .tf-btn:active { transform: translateY(1px); }
+
+        .btn-outline { background-color: transparent; border: 2px solid var(--border-color); color: var(--text-muted); transition: all 0.3s; border-radius: 0.75rem; font-family: 'Cinzel'; font-weight: bold; cursor: pointer;}
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); background-color: var(--accent-glow); }
+
+        .btn-translate { background-color: rgba(0,0,0,0.5); border: 1px solid var(--border-color); color: var(--text-muted); padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; font-family: 'Inter'; font-size: 0.8rem; font-weight: bold; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-translate:hover { background-color: var(--accent); color: var(--btn-text); }
+
+        /* --- Scroll & Slide Layout (V2 Centered) --- */
+        .slide { position: absolute; top: 0; left: 0; display: none; opacity: 0; width: 100vw; height: 100vh; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; box-sizing: border-box; z-index: 10; transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1); overflow-y: auto; }
+        .slide.active { display: flex; opacity: 1; animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        
+        .page-content { width: 100%; max-width: 1200px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin: auto; padding-top: 5rem; padding-bottom: 6rem; }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* ---- DRAG & DROP ---- */
+        .word-chip {
+            display: inline-flex; align-items: center; justify-content: center;
+            font-family: 'Cinzel', serif; font-size: 1.25rem; font-weight: 900;
+            padding: 0.8rem 1.8rem; border-radius: 99px; cursor: pointer;
+            background: var(--panel-bg); border: 2px solid var(--border-color);
+            color: var(--text-main); transition: all 0.25s; user-select: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); letter-spacing: 2px;
+        }
+        .word-chip:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 25px var(--accent-glow); }
+        .word-chip:active { transform: scale(0.95); }
+        .word-chip.correct { border-color: #10b981; color: #10b981; background: rgba(16,185,129,0.15); pointer-events: none; }
+        .word-chip.wrong   { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.15); animation: shakeError 0.5s ease; }
+
+        .drop-zone {
+            min-height: 80px; border: 2px dashed rgba(255,255,255,0.2); border-radius: 1rem;
+            display: flex; flex-wrap: wrap; gap: 10px; padding: 1rem;
+            align-items: center; justify-content: center; transition: all 0.3s;
+            background: rgba(0,0,0,0.4); margin-top: 1rem; cursor: pointer;
+        }
+        .drop-zone.drag-over { border-color: var(--accent); background: var(--accent-glow); transform: scale(1.02); }
+        
+        @keyframes popSuccess { 0% { transform: scale(1); } 50% { transform: scale(1.1); background: #10b981; color: white;} 100% { transform: scale(1); opacity: 0.7; } }
+        @keyframes shakeError { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); border-color: #ef4444; background: rgba(239, 68, 68, 0.2); } 50% { transform: translateX(10px); border-color: #ef4444; } 75% { transform: translateX(-10px); border-color: #ef4444; } }
+        .error-shake { animation: shakeError 0.5s ease; }
+
+        /* Follow-up / Quotes */
+        .quote-box { background: rgba(0,0,0,0.4); border-left: 6px solid var(--secondary); padding: 2.5rem; border-radius: 0 1rem 1rem 0; margin: 2rem auto; text-align: left; max-width: 900px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); position: relative; }
+        .quote-box::before { content: '"'; position: absolute; top: -1rem; left: 1rem; font-family: serif; font-size: 6rem; color: var(--accent); opacity: 0.3; line-height: 1; }
+        
+        .speaking-starter { background: rgba(0,0,0,0.6); border: 2px solid var(--border-color); border-left: 6px solid var(--secondary); box-shadow: var(--shadow); padding: 2rem; margin: 2rem auto; text-align: left; border-radius: 1rem; width: 100%; }
+
+        /* ---- OPINION BUTTONS ---- */
+        .opinion-btn {
+            font-family: 'Inter', sans-serif; font-size: 1.1rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            padding: 1rem 1.8rem; border-radius: 99px; cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04);
+            color: var(--text-muted); transition: all 0.3s; margin: 0.5rem;
+        }
+        .opinion-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
+        .opinion-btn.selected {
+            background: linear-gradient(135deg, var(--accent) 0%, #ca8a04 100%);
+            color: #000; border-color: transparent; font-weight: 900;
+            box-shadow: 0 6px 20px var(--accent-glow);
+        }
+
+        .prompt-box {
+            max-height: 0; overflow: hidden; opacity: 0;
+            transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            background: rgba(251, 191, 36, 0.9); border-left: 8px solid var(--secondary);
+            border-radius: 0 1rem 1rem 0; text-align: left; margin: 0 auto; width: 100%;
+        }
+        .prompt-box.open { max-height: 500px; opacity: 1; margin-top: 2rem; padding: 2.5rem; }
+
+        /* Transcript Click */
+        .click-word { cursor: pointer; color: var(--accent); border-bottom: 2px dashed var(--accent); transition: all 0.3s; position: relative; font-family: 'Cinzel', serif; font-weight: bold; }
+        .click-word:hover { background: var(--accent-glow); color: var(--btn-text); }
+        .click-word.revealed { color: var(--secondary); border-color: var(--secondary); background: rgba(59, 130, 246, 0.1); }
+
+        /* Roulette Canvas Wrapper */
+        .roulette-wrapper { position: relative; width: 400px; height: 400px; margin: 0 auto; border-radius: 50%; box-shadow: 0 0 40px var(--accent-glow); border: 4px solid var(--border-color); }
+        #roulette-wheel { width: 100%; height: 100%; border-radius: 50%; transition: transform 4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: conic-gradient(from 0deg, var(--bg-bot) 0% 16.6%, var(--border-color) 16.6% 33.3%, var(--bg-top) 33.3% 50%, var(--bg-bot) 50% 66.6%, var(--border-color) 66.6% 83.3%, var(--bg-top) 83.3% 100%); }
+        .roulette-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid var(--accent); z-index: 20; filter: drop-shadow(0 0 10px var(--accent)); }
+        .roulette-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: var(--panel-bg); border: 4px solid var(--accent); border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--accent); font-family: 'Cinzel'; font-weight: bold; }
+        .roulette-center:hover { background: var(--accent); color: var(--btn-text); box-shadow: 0 0 20px var(--accent); }
+        .slice-number { position: absolute; top: 50%; left: 50%; transform-origin: 0 0; font-family: 'Orbitron'; font-size: 2rem; font-weight: bold; color: rgba(255,255,255,0.8); text-shadow: 0 0 10px black; pointer-events: none; z-index: 5; }
+
+        /* Praise Pop-up */
+        #praise-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, 20px) scale(0.8); opacity: 0; z-index: 1000; pointer-events: none; text-align: center; }
+        @keyframes toastUp { 0% { transform: translate(-50%, 20px) scale(0.8); opacity: 0; } 10% { transform: translate(-50%, 0) scale(1.1); opacity: 1; filter: drop-shadow(0 0 30px var(--accent-glow)); } 15% { transform: translate(-50%, 0) scale(1); opacity: 1; } 90% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(-50%, -20px) scale(0.8); opacity: 0; } }
+        .praise-anim { animation: toastUp 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* Top Nav */
+        #top-nav { position: fixed; top: 0; left: 0; width: 100%; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent); }
+        
+        /* Bottom Nav */
+        #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; z-index: 100; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); }
+        #progress-bar { position: absolute; top: 0; left: 0; height: 3px; background: rgba(255,255,255,0.1); width: 100%; }
+        #progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--accent); }
+        .nav-arrow { background: none; border: none; color: var(--secondary); font-size: 1.5rem; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Orbitron'; letter-spacing: 2px; }
+        .nav-arrow:hover { color: var(--accent); transform: scale(1.1); text-shadow: 0 0 10px var(--accent); }
+
+        .lousa-lateral { transform: translateX(100%); visibility: hidden; transition: transform 0.5s ease-in-out, visibility 0s linear 0.5s; }
+        .lousa-lateral.open { transform: translateX(0); visibility: visible; transition: transform 0.5s ease-in-out, visibility 0s; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+    </style>
+</head>
+<body class="selection:bg-[var(--accent)] selection:text-[var(--btn-text)]">
+
+    <div class="ambient-bg"></div>
+
+    <!-- Top Navigation -->
+    <nav id="top-nav">
+        <div class="flex items-center gap-4">
+            <span class="font-hero text-2xl font-black text-[var(--accent)] tracking-widest drop-shadow-[0_0_10px_var(--accent-glow)]">WOLFLIX</span>
+            <span class="font-tech text-xs tracking-[0.3em] text-[var(--secondary)] hidden md:inline border-l border-gray-700 pl-4 uppercase">The Return (B1)</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="btn-outline px-4 py-1 text-sm bg-black hidden md:block" onclick="toggleFullScreen()">⛶ Fullscreen</button>
+            <button class="btn-outline px-4 py-1 text-sm bg-black hidden md:block" onclick="toggleDrawing()">🖍️ Board</button>
+        </div>
+    </nav>
+
+    <!-- Bottom Navigation -->
+    <nav id="bottom-nav">
+        <div id="progress-bar"><div id="progress-fill"></div></div>
+        <button id="btn-prev" class="nav-arrow" onclick="prevSlide()">❮ BACK</button>
+        <span id="page-indicator" class="font-tech text-sm tracking-[0.2em] text-[var(--text-muted)] font-bold">PAGE 01 / 25</span>
+        <button id="btn-next" class="nav-arrow" onclick="nextSlide()">NEXT ❯</button>
+    </nav>
+
+    <!-- Drawing Board / Lousa (Lateral Panel) -->
+    <div id="lousa-container" class="fixed top-0 right-0 bottom-0 w-full md:w-[450px] z-[150] bg-black/95 backdrop-blur-xl border-l-2 border-[var(--accent)] shadow-[-10px_0_50px_rgba(0,0,0,0.8)] flex flex-col lousa-lateral">
+        <!-- Header & Tools -->
+        <div class="p-6 border-b border-[var(--border-color)] bg-black/50">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-hero text-[var(--accent)] font-bold tracking-widest uppercase drop-shadow-[0_0_10px_var(--accent-glow)]">BOARD</h3>
+                <button class="text-gray-400 hover:text-white transition-all font-bold" onclick="toggleDrawing()">✕ CLOSE</button>
+            </div>
+            
+            <div class="flex flex-wrap gap-2">
+                <button id="tool-type" class="lousa-tool flex-1 btn-outline px-2 py-2 text-sm bg-[var(--accent)] text-black transition-all" onclick="setLousaTool('type', this)">📝 Text</button>
+                <button id="tool-draw" class="lousa-tool flex-1 btn-outline px-2 py-2 text-sm bg-black transition-all" onclick="setLousaTool('draw', this)">🖍️ Draw</button>
+                <button id="tool-smart" class="lousa-tool flex-1 btn-outline px-2 py-2 text-sm bg-black transition-all" onclick="setLousaTool('smart', this)">✨ Smart</button>
+                <button class="flex-1 btn-outline px-2 py-2 text-sm bg-black text-red-500 border-red-500 hover:bg-red-900 transition-all" onclick="clearLousa()">🗑️ Clear</button>
+            </div>
+        </div>
+        <!-- Canvas Area -->
+        <div class="relative flex-1 w-full bg-[#111] overflow-hidden" id="lousa-workspace">
+            <canvas id="drawing-board" class="absolute inset-0 w-full h-full cursor-text"></canvas>
+            <div id="text-layer" class="absolute inset-0 w-full h-full pointer-events-none"></div>
+        </div>
+    </div>
+
+    <!-- Praise Popup -->
+    <div id="praise-popup">
+        <div class="text-[8rem] drop-shadow-[0_0_50px_var(--accent-glow)] mb-4">👑</div>
+        <h2 id="praise-text" class="text-6xl font-hero font-black text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)] uppercase tracking-widest">GLORY!</h2>
+    </div>
+
+    <!-- Follow-up Modal (Bottom Sheet) -->
+    <div id="followup-modal" class="fixed bottom-0 left-0 right-0 z-[200] transform translate-y-full transition-transform duration-700 ease-in-out shadow-[0_-10px_50px_rgba(0,0,0,0.8)] border-t-4 border-[var(--accent)] bg-black/95 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between p-8 md:p-12 gap-8">
+            <div class="flex-1 text-left w-full">
+                <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                    <span class="text-6xl drop-shadow-[0_0_15px_var(--accent-glow)] hidden md:block">💬</span>
+                    <h3 class="text-3xl md:text-5xl font-bold font-hero text-[var(--accent)] leading-snug" id="fu-q"></h3>
+                </div>
+                <div class="bg-black/60 border-l-4 border-[var(--secondary)] p-6 md:ml-20 rounded-r-xl">
+                    <p class="font-bold text-[var(--secondary)] text-sm mb-2 tracking-widest uppercase font-tech">🗣️ Speaking Starter:</p>
+                    <p class="text-2xl md:text-3xl italic text-[var(--text-muted)] font-medium" id="fu-s"></p>
+                </div>
+            </div>
+            <button onclick="closeFollowUp()" class="tf-btn px-12 py-6 text-2xl whitespace-nowrap self-stretch md:self-center hover:scale-105 shadow-[0_0_30px_var(--accent-glow)]">CONTINUE ❯</button>
+        </div>
+    </div>
+
+    <!-- Audio -->
+    <audio id="sfx-success" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb630cc098.mp3?filename=success-1-6297.mp3"></audio>
+    <audio id="sfx-error" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_c6ccf3232f.mp3?filename=error-126627.mp3"></audio>
+
+    <!-- Slides Container -->
+    <main id="slides-container"></main>
+
+    <script>
+        // --- DATA STRUCTURE (B1 V1.0) ---
+        const slidesData = [
+            // 1. Cover
+            {
+                type: 'cover',
+                title: 'THE RETURN',
+                subtitle: 'B1 MASTERCLASS',
+                poster: 'https://m.media-amazon.com/images/M/MV5BZDY2NTkxMWQtMmNkMC00NmNjLWIzMmItNmEyMmRmMDk2YmY2XkEyXkFqcGc@._V1_.jpg',
+                btnText: 'RECLAIM THE THRONE'
+            },
+            // 2. Info Context
+            {
+                type: 'info',
+                title: '20 YEARS LATER',
+                subtitle: 'The Context',
+                content: '<p>Odysseus fought in Troy for 10 years, and was lost at sea for 10 more. His kingdom believes he is dead. His wife is surrounded by greedy men who want to steal his throne.</p>'
+            },
+            // 3. Warm Up
+            {
+                type: 'discussion',
+                title: 'WARM-UP',
+                subtitle: 'The Lost King',
+                emoji: '👑',
+                question: 'If you were lost at sea for 10 years, what is the first thing you would do when you finally returned home?',
+                prompts: ['"If I returned home after 10 years, the first thing I would do is..."', '"I think I would immediately..."']
+            },
+            // 4. Lexicon Wordwall 1
+            {
+                type: 'wordwall-text',
+                title: 'Words of The Kingdom',
+                subtitle: 'Match the words to their definitions.',
+                id: 'ww1',
+                finalFollowup: 'If you were a king/queen, how would you test the people who want to steal your throne?',
+                finalStarter: 'I would test them by...',
+                pairs: [
+                    { word: 'SUITOR', def: 'A man who wants to marry a woman.', pt: 'Pretendente' },
+                    { word: 'VENGEANCE', def: 'Punishment given for an injury or wrong.', pt: 'Vingança' },
+                    { word: 'FATE', def: 'The development of events beyond a person\'s control.', pt: 'Destino' },
+                    { word: 'THRONE', def: 'The special chair used by a king or queen.', pt: 'Trono' }
+                ]
+            },
+            // 4.5. Opinion Scale (Pre-Grammar)
+            {
+                type: 'opinion-scale',
+                title: 'OPINION SCALE',
+                subtitle: 'The Price of Betrayal',
+                quote: 'Vengeance only creates more enemies. It is always better to forgive and move on.',
+                pt: 'A vingança só cria mais inimigos. É sempre melhor perdoar e seguir em frente.',
+                teacherPrompt: 'Is forgiveness a sign of strength, or a sign of weakness? What would you do if someone stole your home?'
+            },
+            // 5. Grammar Intro (Second Conditional)
+            {
+                type: 'grammar',
+                title: 'THE SECOND CONDITIONAL',
+                subtitle: 'Imaginary Situations',
+                content: `
+                    <div class="text-4xl leading-loose font-bold w-full">
+                        We use the Second Conditional to talk about <span class="text-[var(--accent)] font-black">unreal or imaginary</span> situations in the present or future.<br><br>
+                        <div class="tf-panel p-10 inline-block mt-8 text-4xl font-hero text-[var(--accent)] shadow-[0_0_30px_var(--accent-glow)]">
+                            <span class="text-[var(--secondary)] font-tech text-sm uppercase block mb-4">Structure:</span>
+                            If + Past Simple, ... would + Verb
+                        </div>
+                    </div>
+                `
+            },
+            // 6. Grammar Deep Dive
+            {
+                type: 'grammar',
+                title: 'HYPOTHETICAL RULES',
+                subtitle: 'The "What If" Game',
+                content: `
+                    <div class="text-3xl leading-relaxed font-bold w-full text-left max-w-5xl mx-auto">
+                        Even though we use the <strong class="text-[var(--accent)]">Past Simple</strong>, we are NOT talking about the past. We are imagining the present!<br><br>
+                        <ul class="list-disc pl-10 mt-6 space-y-4 text-2xl font-base">
+                            <li><strong class="text-[var(--accent)]">If he came</strong> back, they <strong class="text-[var(--secondary)]">would be</strong> afraid.</li>
+                            <li><strong class="text-[var(--accent)]">If I had</strong> a sword, I <strong class="text-[var(--secondary)]">would fight</strong> them.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            // 7. Lexicon Wordwall 2
+            {
+                type: 'wordwall-text',
+                title: 'Actions of War',
+                id: 'ww2',
+                finalFollowup: 'If someone betrayed you and stole your home, would you seek vengeance or walk away?',
+                finalStarter: 'If someone betrayed me, I would...',
+                pairs: [
+                    { word: 'PINE', def: 'To miss and long for someone terribly.', pt: 'Ansiar/Sofrer por' },
+                    { word: 'BETRAY', def: 'To be disloyal to someone who trusts you.', pt: 'Trair' },
+                    { word: 'DEFY', def: 'To openly resist or refuse to obey.', pt: 'Desafiar' },
+                    { word: 'AMBUSH', def: 'A surprise attack from a hidden position.', pt: 'Emboscada' }
+                ]
+            },
+            // 8. Speaking Pre-Movie
+            {
+                type: 'discussion',
+                title: 'PRE-MOVIE ANALYSIS',
+                subtitle: 'The Abandoned Kingdom',
+                emoji: '🏰',
+                question: 'If you were away from your house for 20 years, what do you think would happen to it? Would people forget you?',
+                prompts: ['"If I were away for 20 years, my house would..."', '"I think people would forget me because..."']
+            },
+            // 9. WOW Mechanic (The Ambush)
+            {
+                type: 'wow',
+                title: 'THE AMBUSH',
+                subtitle: 'He has locked the doors. No one leaves alive.',
+                btnText: 'FIGHT FOR YOUR LIFE'
+            },
+            // 10. The Trailer
+            {
+                type: 'video',
+                title: 'Screening Room',
+                subtitle: 'Watch the epic return...',
+                videoId: 'f_bKjZeJBBI'
+            },
+            // 11. Comprehension Check 1
+            {
+                type: 'quiz',
+                title: 'Comprehension Check',
+                subtitle: 'Based on the trailer...',
+                question: 'Who are the men partying in Odysseus\'s house?',
+                options: [
+                    { text: 'His old friends.', correct: false },
+                    { text: 'Suitors who want his wife and throne.', correct: true }
+                ]
+            },
+            // 11.5 Post-Movie Discussion
+            {
+                type: 'discussion',
+                title: 'POST-MOVIE ANALYSIS',
+                subtitle: 'The King Returns',
+                emoji: '🗡️',
+                question: 'When Odysseus finally revealed himself, what do you think went through the suitors\' minds?',
+                prompts: ['"They must have felt..."', '"If I were them, I would immediately..."']
+            },
+            // 12. Transcript Analysis
+            {
+                type: 'transcript-click',
+                title: 'The Prophecy',
+                subtitle: 'Click the highlighted words to unlock the discussion.',
+                textHTML: `"What <span class="click-word" data-pt="faria" data-q="What WOULD you DO if you won the lottery?" data-s="If I won, I would..." onclick="revealWord(this)">would</span> he do <span class="click-word" data-pt="se ele voltasse" data-q="Why do we use 'came' (past) here if we are talking about the present?" data-s="Because it is a hypothetical situation (Second Conditional)." onclick="revealWord(this)">if he came back</span> here and find all these <span class="click-word" data-pt="pretendentes" data-q="If you had many suitors, how would you choose one?" data-s="I would choose the one who..." onclick="revealWord(this)">suitors</span> in his house?<br><br>
+                           They're <span class="click-word" data-pt="sofrendo/ansiando por" data-q="Have you ever pined for something you couldn't have?" data-s="Yes, I pined for..." onclick="revealWord(this)">pining for</span> a daddy you didn't even know.<br><br>
+                           My dad is coming home bringing <span class="click-word" data-pt="vingança" data-q="If you could get vengeance on one person, would you take it?" data-s="No, I wouldn't take vengeance because..." onclick="revealWord(this)">vengeance</span>."`
+            },
+            // 13. Comprehension Check 2
+            {
+                type: 'quiz',
+                title: 'Grammar Check',
+                subtitle: 'From the transcript',
+                question: '"What would he do if he _____ back?"',
+                options: [
+                    { text: 'come', correct: false },
+                    { text: 'came', correct: true }
+                ]
+            },
+            // 14. Grammar: WERE
+            {
+                type: 'grammar',
+                title: 'THE "WERE" RULE',
+                subtitle: 'If I were a king...',
+                content: `
+                    <div class="text-3xl leading-relaxed font-bold w-full">
+                        In the Second Conditional, we often use <span class="text-[var(--accent)] font-black text-5xl">WERE</span> instead of 'was' for ALL subjects (I, he, she, it).<br><br>
+                        <div class="tf-panel p-10 inline-block mt-8 text-4xl border-[var(--accent)] font-hero bg-black/60 shadow-2xl">
+                            "If <span class="text-[var(--accent)]">I were</span> you, I <span class="text-[var(--secondary)]">would run</span>."
+                        </div>
+                    </div>
+                `
+            },
+            // 15. Grammar Practice (Wordwall)
+            {
+                type: 'wordwall-sentence',
+                title: 'The Oracle',
+                subtitle: 'Complete with the Second Conditional.',
+                id: 'ww3',
+                pairs: [
+                    { ans: 'HAD', text: 'If I ________ an army, I would fight them. (have)', pt: 'Se eu tivesse um exército, eu lutaria contra eles.' },
+                    { ans: 'WOULD KILL', text: 'If he found them, he ________ ________ them. (kill)', pt: 'Se ele os encontrasse, ele os mataria.' },
+                    { ans: 'WERE', text: 'If she ________ smart, she would escape. (be)', pt: 'Se ela fosse esperta, ela escaparia.' }
+                ]
+            },
+            // 16. Grammar Modals
+            {
+                type: 'grammar',
+                title: 'MODALS OF DEDUCTION',
+                subtitle: 'Making Guesses',
+                content: `
+                    <div class="text-3xl leading-relaxed font-bold w-full text-left max-w-5xl mx-auto">
+                        We use modals to guess if something is true:<br><br>
+                        <ul class="list-disc pl-10 mt-6 space-y-6 text-2xl font-base">
+                            <li><strong class="text-[var(--accent)]">MUST BE</strong>: I am 99% sure it's true. ("He must be dead.")</li>
+                            <li><strong class="text-[var(--secondary)]">MIGHT BE</strong>: It is possible, but I'm not sure. ("He might be alive.")</li>
+                            <li><strong class="text-red-500">CAN'T BE</strong>: I am 99% sure it's FALSE. ("That can't be Odysseus.")</li>
+                        </ul>
+                    </div>
+                `
+            },
+            // 17. Grammar Practice 2 (Wordwall)
+            {
+                type: 'wordwall-sentence',
+                title: 'Deductions',
+                subtitle: 'Choose the correct Modal.',
+                id: 'ww4',
+                pairs: [
+                    { ans: 'MUST BE', text: 'He hasn\'t eaten in 10 days. He ________ ________ starving.', pt: 'Ele deve estar faminto.' },
+                    { ans: 'CAN\'T BE', text: 'That ________ ________ him. He died 20 years ago!', pt: 'Aquele não pode ser ele.' },
+                    { ans: 'MIGHT BE', text: 'I don\'t know where he is. He ________ ________ in Troy.', pt: 'Ele pode estar em Troia.' }
+                ]
+            },
+            // 18. Quote
+            {
+                type: 'quote',
+                title: 'EPIC QUOTE',
+                subtitle: 'Analyze the text',
+                quote: 'No one could stand between me and home. Not even the gods.',
+                translation: 'Ninguém poderia ficar entre mim e meu lar. Nem mesmo os deuses.'
+            },
+            // 19. Where Do You Stand?
+            {
+                type: 'dilemma',
+                title: 'WHERE DO YOU STAND?',
+                subtitle: 'Epic Dilemmas',
+                dilemmas: [
+                    {
+                        scenario: "If someone stole your home, would you show them mercy or destroy them?",
+                        optionA: "Show Mercy",
+                        optionB: "Destroy Them",
+                        teacherPrompt: "Why did you choose this? Is forgiveness always the best answer?",
+                        pt: "Por que você escolheu isso? O perdão é sempre a melhor resposta?"
+                    },
+                    {
+                        scenario: "If you knew your future was going to be tragic, would you try to change it?",
+                        optionA: "Change It",
+                        optionB: "Accept Fate",
+                        teacherPrompt: "Do you believe we can change our destiny, or is it already written?",
+                        pt: "Você acredita que podemos mudar nosso destino, ou ele já está escrito?"
+                    },
+                    {
+                        scenario: "If your loyal soldiers wanted to surrender, but you wanted to fight, what would you do?",
+                        optionA: "Surrender",
+                        optionB: "Fight Alone",
+                        teacherPrompt: "Is it better to be a living coward or a dead hero?",
+                        pt: "É melhor ser um covarde vivo ou um herói morto?"
+                    }
+                ]
+            },
+            // 20. Grammar Mix (Wordwall)
+            {
+                type: 'wordwall-sentence',
+                title: 'TEST OF TIME',
+                subtitle: 'Match the correct structure.',
+                id: 'ww5',
+                pairs: [
+                    { ans: 'IF HE CAME', text: '________ ________ ________ back, what would he do?', pt: 'Se ele voltasse, o que ele faria?' },
+                    { ans: 'WOULD YOU DO', text: 'What ________ ________ ________ if you were king?', pt: 'O que você faria se fosse rei?' },
+                    { ans: 'MUST BE', text: 'He has a sword. He ________ ________ a soldier.', pt: 'Ele deve ser um soldado.' }
+                ]
+            },
+            // 21. Speaking Discussion
+            {
+                type: 'discussion',
+                title: 'SPEAKING',
+                subtitle: 'Fate vs Free Will',
+                emoji: '⚡',
+                question: 'Odysseus defied the gods. If you knew your future was going to be bad, would you try to change it?',
+                prompts: ['"If I knew my future, I would try to change it by..."', '"I wouldn\'t try to change it because..."']
+            },
+            // 22. Comprehension Quiz
+            {
+                type: 'quiz',
+                title: 'Comprehension Check',
+                subtitle: 'Based on the quote...',
+                question: '"No one could stand between me and home." What does this mean?',
+                options: [
+                    { text: 'Nothing can stop him from returning.', correct: true },
+                    { text: 'He wants to stand next to his house.', correct: false }
+                ]
+            },
+            // 23. Speaking Discussion
+            {
+                type: 'discussion',
+                title: 'STRATEGY',
+                subtitle: 'The Master Plan',
+                emoji: '♟️',
+                question: 'There are 100 suitors in the house. Odysseus is alone. If you were him, how would you defeat them?',
+                prompts: ['"If I were him, I would poison their wine..."', '"I would lock the doors and..."', '"I would wait until they are asleep and..."']
+            },
+            // 24. Final Quiz
+            {
+                type: 'quiz',
+                title: 'FINAL STAND',
+                subtitle: 'Prove your knowledge.',
+                question: 'Which sentence is grammatically CORRECT?',
+                options: [
+                    { text: 'If I was you, I will run.', correct: false },
+                    { text: 'If I were you, I would run.', correct: true }
+                ]
+            },
+            // 25. End
+            {
+                type: 'end',
+                title: 'KING OF ITHACA',
+                subtitle: 'B1 COMPLETED',
+                content: 'You mastered the Second Conditional, Modals of Deduction, and the Art of Vengeance. Your throne is secure.',
+                btnText: 'CLAIM VICTORY'
+            }
+        ];
+
+        // --- RENDER ENGINE ---
+        const container = document.getElementById('slides-container');
+
+        slidesData.forEach((slide, index) => {
+            const slideEl = document.createElement('section');
+            slideEl.className = `slide ${index === 0 ? 'active' : ''}`;
+            
+            let html = `<div class="page-content">`;
+
+            if (slide.type === 'cover') {
+                html += `
+                    <div class="w-full max-w-[300px] tf-panel p-2 mb-8 shadow-[0_0_50px_var(--accent-glow)] border-4 border-[var(--secondary)] mx-auto relative overflow-hidden group">
+                        <img src="${slide.poster}" class="w-full h-auto object-cover opacity-90 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-blue-900/30 mix-blend-multiply pointer-events-none"></div>
+                    </div>
+                    <span class="text-xs font-bold tracking-[0.4em] uppercase text-[var(--secondary)] mb-4 border border-[var(--secondary)] px-6 py-2 rounded-full bg-black font-tech shadow-xl">WOLFLIX Masterclass</span>
+                    <h1 class="text-7xl md:text-9xl font-hero font-black mb-4 text-[var(--accent)] uppercase tracking-tighter drop-shadow-[0_0_20px_var(--accent-glow)]">${slide.title}</h1>
+                    <h2 class="text-3xl font-tech tracking-widest text-[var(--text-muted)] mb-10">${slide.subtitle}</h2>
+                    
+                    <button onclick="nextSlide()" class="tf-btn px-16 py-6 text-2xl">
+                        ${slide.btnText}
+                    </button>
+                `;
+            } 
+            else if (slide.type === 'info') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">${slide.subtitle}</h2>
+                    <h1 class="text-6xl md:text-8xl font-hero uppercase mb-12 font-black text-[var(--accent)] drop-shadow-xl">${slide.title}</h1>
+                    <div class="text-3xl md:text-4xl leading-relaxed text-center max-w-5xl font-bold tf-panel p-12">${slide.content}</div>
+                `;
+            }
+            else if (slide.type === 'discussion') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">${slide.title}</h2>
+                    <h1 class="text-5xl md:text-7xl font-hero uppercase mb-12 font-black text-[var(--accent)] drop-shadow-xl">${slide.subtitle}</h1>
+                    <div class="tf-panel p-12 w-full max-w-5xl shadow-2xl">
+                        <span class="text-8xl mb-8 block drop-shadow-lg">${slide.emoji}</span>
+                        <p class="text-3xl md:text-4xl font-bold mb-10 leading-snug text-[var(--text-main)]">${slide.question}</p>
+                        <div class="speaking-starter">
+                            <p class="font-bold text-[var(--secondary)] text-sm mb-4 tracking-widest uppercase font-tech">🗣️ Speaking Starters:</p>
+                            ${slide.prompts.map(p => `<p class="italic text-2xl font-medium text-[var(--text-muted)] mb-3">${p}</p>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            else if (slide.type === 'roulette') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">${slide.title}</h2>
+                    <h1 class="text-5xl md:text-7xl font-hero uppercase mb-12 font-black text-[var(--accent)] drop-shadow-xl">${slide.subtitle}</h1>
+                    
+                    <div class="flex flex-col md:flex-row items-center gap-12 w-full max-w-6xl mx-auto">
+                        <!-- Roulette Wheel -->
+                        <div class="roulette-wrapper flex-shrink-0">
+                            <div class="roulette-pointer"></div>
+                            <div id="roulette-wheel">
+                                <div class="slice-number" style="transform: rotate(30deg) translate(0, -120px) rotate(-30deg);">1</div>
+                                <div class="slice-number" style="transform: rotate(90deg) translate(0, -120px) rotate(-90deg);">2</div>
+                                <div class="slice-number" style="transform: rotate(150deg) translate(0, -120px) rotate(-150deg);">3</div>
+                                <div class="slice-number" style="transform: rotate(210deg) translate(0, -120px) rotate(-210deg);">4</div>
+                                <div class="slice-number" style="transform: rotate(270deg) translate(0, -120px) rotate(-270deg);">5</div>
+                                <div class="slice-number" style="transform: rotate(330deg) translate(0, -120px) rotate(-330deg);">6</div>
+                            </div>
+                            <div class="roulette-center" onclick="spinRoulette()">SPIN</div>
+                        </div>
+
+                        <!-- Result Panel -->
+                        <div class="tf-panel p-10 w-full flex flex-col justify-center min-h-[350px]">
+                            <h3 class="text-3xl font-tech text-[var(--secondary)] mb-6 uppercase tracking-widest" id="roulette-status">Waiting for spin...</h3>
+                            <p class="text-4xl font-bold leading-tight mb-8" id="roulette-question">...</p>
+                            <div class="translate-target hidden text-xl text-[var(--accent)] font-bold mb-6" id="roulette-pt"></div>
+                            <div class="speaking-starter !m-0 !p-6 hidden" id="roulette-starter-box">
+                                <p class="font-tech text-xs text-[var(--secondary)] uppercase tracking-widest mb-2">🗣️ Speaking Starter</p>
+                                <p class="text-2xl italic text-[var(--text-muted)]" id="roulette-starter"></p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (slide.type === 'wordwall-text' || slide.type === 'wordwall-sentence') {
+                let shuffledWords = [...slide.pairs].sort(() => Math.random() - 0.5);
+                let isSentence = slide.type === 'wordwall-sentence';
+
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">${isSentence ? 'Grammar Challenge' : 'Lexicon'}</h2>
+                    <h1 class="text-5xl md:text-7xl font-hero uppercase mb-8 font-black text-[var(--accent)] drop-shadow-xl">${slide.title}</h1>
+                    ${slide.subtitle ? `<p class="text-2xl mb-8 text-[var(--text-muted)] font-bold">${slide.subtitle}</p>` : ''}
+                    
+                    <!-- Word Bank -->
+                    <div class="flex flex-wrap gap-4 justify-center mb-10 w-full max-w-6xl bg-black/40 p-6 rounded-2xl border border-[var(--border-color)] shadow-inner min-h-[100px]" id="${slide.id}-bank" ondragover="allowDrop(event)" ondrop="dropBack(event)" data-finalq="${slide.finalFollowup ? slide.finalFollowup.replace(/"/g, '&quot;') : ''}" data-finals="${slide.finalStarter ? slide.finalStarter.replace(/"/g, '&quot;') : ''}">
+                        ${shuffledWords.map((p, i) => {
+                            let word = isSentence ? p.ans : p.word;
+                            return `
+                            <div class="word-chip" draggable="true" ondragstart="drag(event)" onclick="clickWordChip(this)" id="${slide.id}-word-${i}" data-match="${word}" data-followup="${p.followup ? p.followup.replace(/"/g, '&quot;') : ''}" data-starter="${p.starter ? p.starter.replace(/"/g, '&quot;') : ''}">
+                                ${word}
+                            </div>`;
+                        }).join('')}
+                    </div>
+
+                    <!-- Drop Zones -->
+                    <div class="grid grid-cols-1 ${slide.pairs.length > 2 ? 'md:grid-cols-2' : ''} gap-6 w-full max-w-6xl">
+                        ${[...slide.pairs].map((p, i) => {
+                            let def = isSentence ? p.text : p.def;
+                            let match = isSentence ? p.ans : p.word;
+                            let pt = p.pt || '';
+                            return `
+                            <div class="tf-panel p-8 flex flex-col justify-between relative group">
+                                <p class="text-3xl font-bold leading-relaxed mb-6">${def}</p>
+                                ${pt ? `<p class="translate-target hidden text-xl text-[var(--secondary)] mb-4 font-base">${pt}</p>` : ''}
+                                <div class="drop-zone" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropVocab(event, this)" onclick="clickDropZone(this)" data-match="${match}"></div>
+                            </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+            else if (slide.type === 'opinion-scale') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">${slide.title}</h2>
+                    <h1 class="text-5xl md:text-7xl font-hero uppercase mb-12 font-black text-[var(--accent)] drop-shadow-xl">${slide.subtitle}</h1>
+                    <div class="tf-panel p-16 max-w-5xl w-full text-center shadow-2xl mx-auto border-2 border-[var(--secondary)]">
+                        <p class="text-5xl font-hero font-bold mb-16 leading-tight italic text-[var(--text-main)] drop-shadow-lg">"${slide.quote}"</p>
+                        <div class="flex flex-wrap justify-center mb-8">
+                            <button class="opinion-btn" onclick="selectOpinion(this, 'prompt-${slide.id || index}')">Strongly Disagree</button>
+                            <button class="opinion-btn" onclick="selectOpinion(this, 'prompt-${slide.id || index}')">Disagree</button>
+                            <button class="opinion-btn" onclick="selectOpinion(this, 'prompt-${slide.id || index}')">Neutral</button>
+                            <button class="opinion-btn" onclick="selectOpinion(this, 'prompt-${slide.id || index}')">Agree</button>
+                            <button class="opinion-btn" onclick="selectOpinion(this, 'prompt-${slide.id || index}')">Strongly Agree</button>
+                        </div>
+                        <div class="prompt-box" id="prompt-${slide.id || index}">
+                            <p class="font-tech text-sm text-black uppercase tracking-widest mb-4">🗣️ Teacher Prompt</p>
+                            <p class="text-3xl italic text-black mb-4 font-bold">"${slide.teacherPrompt}"</p>
+                            <div class="translate-target hidden text-xl text-black mt-2 font-base opacity-75">${slide.pt}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (slide.type === 'dilemma') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">${slide.title}</h2>
+                    <h1 class="text-5xl md:text-7xl font-hero uppercase mb-12 font-black text-[var(--accent)] drop-shadow-xl">${slide.subtitle}</h1>
+                    <div class="dilemma-container w-full max-w-6xl mx-auto relative min-h-[450px]">
+                        ${slide.dilemmas.map((d, i) => `
+                            <div class="dilemma-slide absolute inset-0 transition-all duration-700 flex flex-col items-center justify-start ${i === 0 ? 'opacity-100 z-10 translate-x-0' : 'opacity-0 z-0 translate-x-20 pointer-events-none'}" id="dilemma-${slide.id || index}-${i}">
+                                <p class="text-4xl md:text-5xl font-bold mb-12 leading-tight text-white drop-shadow-lg tf-panel p-10 w-full shadow-2xl">"${d.scenario}"</p>
+                                <div class="flex flex-col md:flex-row gap-8 w-full px-4 md:px-12">
+                                    <button class="flex-1 dilemma-btn bg-black/80 border-2 border-[var(--border-color)] p-8 rounded-2xl text-2xl md:text-3xl font-bold text-gray-300 hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-[0_0_30px_var(--accent-glow)] transition-all hover:scale-[1.02]" onclick="selectDilemmaOption(this, 'prompt-${slide.id || index}-${i}')">${d.optionA}</button>
+                                    <button class="flex-1 dilemma-btn bg-black/80 border-2 border-[var(--border-color)] p-8 rounded-2xl text-2xl md:text-3xl font-bold text-gray-300 hover:border-[var(--secondary)] hover:text-[var(--secondary)] hover:shadow-[0_0_30px_rgba(200,150,50,0.5)] transition-all hover:scale-[1.02]" onclick="selectDilemmaOption(this, 'prompt-${slide.id || index}-${i}')">${d.optionB}</button>
+                                </div>
+                                <div class="prompt-box mt-12 w-full max-w-4xl" id="prompt-${slide.id || index}-${i}">
+                                    <p class="font-tech text-sm text-[var(--secondary)] uppercase tracking-widest mb-4">🗣️ Teacher Prompt</p>
+                                    <p class="text-3xl italic text-white mb-4 font-bold">"${d.teacherPrompt}"</p>
+                                    ${d.pt ? `<div class="translate-target hidden text-xl text-gray-400 mt-2 font-base opacity-75">${d.pt}</div>` : ''}
+                                </div>
+                                ${i < slide.dilemmas.length - 1 ? `
+                                    <button class="mt-12 tf-btn px-10 py-4 text-xl hidden next-dilemma-btn" onclick="nextDilemma('${slide.id || index}', ${i})">NEXT DILEMMA ❯</button>
+                                ` : `
+                                    <p class="mt-12 font-tech text-xl text-[var(--accent)] hidden next-dilemma-btn uppercase tracking-widest drop-shadow-[0_0_10px_var(--accent-glow)]">ALL DILEMMAS COMPLETED</p>
+                                `}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            else if (slide.type === 'transcript-click') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">${slide.title}</h2>
+                    <h1 class="text-5xl md:text-7xl font-hero uppercase mb-12 font-black text-[var(--accent)] drop-shadow-xl">${slide.subtitle}</h1>
+                    <div class="tf-panel p-16 max-w-5xl w-full text-center text-4xl md:text-5xl font-hero leading-relaxed italic text-[var(--text-main)] shadow-2xl border-2 border-[var(--secondary)]">
+                        ${slide.textHTML}
+                    </div>
+                    <div id="ts-speaking-box" class="mt-8 tf-panel bg-black/90 border-2 border-[var(--accent)] p-8 max-w-4xl w-full hidden opacity-0 transition-opacity duration-500 shadow-[0_0_30px_var(--accent-glow)] mx-auto">
+                        <p class="text-sm font-tech text-[var(--secondary)] uppercase tracking-widest mb-2">Teacher Prompt</p>
+                        <h3 id="ts-q" class="text-4xl text-[var(--text-main)] font-bold mb-6 font-base"></h3>
+                        <p id="ts-s" class="text-3xl text-[var(--accent)] italic font-bold font-hero"></p>
+                        <div id="ts-pt" class="translate-target hidden text-xl text-gray-400 mt-4"></div>
+                    </div>
+                `;
+            }
+            else if (slide.type === 'quote') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">${slide.title}</h2>
+                    <h1 class="text-5xl md:text-7xl font-hero uppercase mb-12 font-black text-[var(--accent)] drop-shadow-xl">${slide.subtitle}</h1>
+                    <div class="quote-box w-full max-w-5xl mx-auto tf-panel p-16">
+                        <p class="text-5xl md:text-6xl font-bold font-hero leading-snug italic text-[var(--text-main)] drop-shadow-lg">"${slide.quote}"</p>
+                        <p class="translate-target hidden text-2xl mt-8 text-[var(--accent)] border-t border-[var(--border-color)] pt-6">${slide.translation}</p>
+                    </div>
+                `;
+            }
+            else if (slide.type === 'grammar') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">Grammar Focus</h2>
+                    <h1 class="text-5xl md:text-7xl font-hero uppercase mb-12 font-black text-[var(--accent)] drop-shadow-xl">${slide.title}</h1>
+                    <p class="text-3xl mb-12 text-[var(--text-muted)] font-bold">${slide.subtitle}</p>
+                    <div class="w-full max-w-6xl text-center mx-auto">${slide.content}</div>
+                `;
+            }
+            else if (slide.type === 'quiz') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">${slide.title}</h2>
+                    <h1 class="text-5xl md:text-7xl font-hero uppercase mb-12 font-black text-[var(--accent)] drop-shadow-xl">${slide.subtitle}</h1>
+                    <div class="tf-panel p-16 max-w-5xl w-full text-center shadow-2xl mx-auto">
+                        <p class="text-5xl font-bold mb-12 leading-tight">"${slide.question}"</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            ${slide.options.map(opt => `
+                                <button class="btn-outline py-8 text-3xl hover:bg-[var(--accent)] hover:text-black transition-all font-base" onclick="handleQuizAnswer(this, ${opt.correct})">${opt.text}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            else if (slide.type === 'wow') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-red-500 animate-pulse">Critical Danger</h2>
+                    <h1 class="text-6xl md:text-8xl font-hero uppercase mb-10 font-black text-white drop-shadow-[0_0_30px_rgba(255,0,0,1)]">${slide.title}</h1>
+                    <p class="text-3xl mb-16 text-[var(--text-muted)] font-bold">${slide.subtitle}</p>
+                    <button onclick="triggerStorm()" class="tf-btn px-16 py-8 text-4xl shadow-[0_0_50px_rgba(255,0,0,0.6)]">
+                        ${slide.btnText}
+                    </button>
+                `;
+            }
+            else if (slide.type === 'video') {
+                html += `
+                    <h2 class="font-tech font-bold tracking-widest mb-4 uppercase text-lg text-[var(--secondary)]">${slide.title}</h2>
+                    <h1 class="text-5xl md:text-7xl font-hero uppercase mb-8 font-black text-[var(--accent)] drop-shadow-xl">${slide.subtitle}</h1>
+                    <div class="tf-panel w-full max-w-6xl aspect-video p-2 shadow-[0_0_50px_var(--accent-glow)] border-4 border-[var(--accent)] bg-black mx-auto">
+                        <iframe class="w-full h-full rounded-xl" src="https://www.youtube.com/embed/${slide.videoId}?autoplay=0&rel=0&showinfo=0&modestbranding=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                `;
+            }
+            else if (slide.type === 'end') {
+                html += `
+                    <span class="text-[8rem] mb-8 block drop-shadow-[0_0_40px_var(--accent-glow)]">👑</span>
+                    <h1 class="text-7xl md:text-9xl font-hero uppercase mb-6 font-black text-[var(--accent)] drop-shadow-xl">${slide.title}</h1>
+                    <h2 class="text-3xl font-tech font-bold tracking-[0.3em] uppercase text-[var(--secondary)] mb-12">${slide.subtitle}</h2>
+                    <p class="text-3xl text-[var(--text-muted)] max-w-4xl mx-auto mb-16 font-bold leading-relaxed">${slide.content}</p>
+                    <button onclick="location.reload()" class="tf-btn px-16 py-6 text-3xl hover:scale-110">${slide.btnText}</button>
+                `;
+            }
+            
+            html += `</div>`;
+            slideEl.innerHTML = html;
+            container.appendChild(slideEl);
+        });
+
+        // --- NAVIGATION ENGINE ---
+        const slides = document.querySelectorAll('.slide');
+        const progressFill = document.getElementById('progress-fill');
+        const pageIndicator = document.getElementById('page-indicator');
+        let currentIdx = 0;
+        const totalSlides = slides.length;
+
+        function updateNav() {
+            slides.forEach((s, i) => {
+                if (i === currentIdx) s.classList.add('active');
+                else s.classList.remove('active');
+            });
+            const pct = ((currentIdx + 1) / totalSlides) * 100;
+            progressFill.style.width = `${pct}%`;
+            pageIndicator.innerText = `PAGE ${(currentIdx + 1).toString().padStart(2, '0')} / ${totalSlides}`;
+        }
+
+        function nextSlide() {
+            if (currentIdx < totalSlides - 1) { currentIdx++; updateNav(); }
+        }
+        function prevSlide() {
+            if (currentIdx > 0) { currentIdx--; updateNav(); }
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+        updateNav();
+
+        // --- PRAISE SYSTEM ---
+        const praisePopup = document.getElementById('praise-popup');
+        const praiseText = document.getElementById('praise-text');
+        function triggerPraise(text) {
+            praisePopup.classList.remove('praise-anim');
+            void praisePopup.offsetWidth; 
+            praiseText.innerHTML = text;
+            praisePopup.classList.add('praise-anim');
+            try { document.getElementById('sfx-success').play(); } catch(e){}
+        }
+
+
+        // --- FULLSCREEN LOGIC ---
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // --- DRAG & DROP & CLICK SYSTEM ---
+        let activeWordChip = null;
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+            if(ev.currentTarget.classList.contains('drop-zone')) {
+                ev.currentTarget.classList.add('drag-over');
+            }
+        }
+        function dragLeave(ev) {
+            ev.currentTarget.classList.remove('drag-over');
+        }
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+            activeWordChip = null;
+            document.querySelectorAll('.word-chip').forEach(c => c.classList.remove('ring-4', 'ring-[var(--accent)]'));
+        }
+        
+        function dropBack(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            if (data) {
+                const el = document.getElementById(data);
+                if (el && !el.classList.contains('correct')) {
+                    ev.currentTarget.appendChild(el);
+                }
+            }
+        }
+
+        function clickWordChip(el) {
+            if (el.classList.contains('correct')) return;
+            document.querySelectorAll('.word-chip').forEach(c => c.classList.remove('ring-4', 'ring-[var(--accent)]'));
+            if (activeWordChip === el) {
+                activeWordChip = null;
+            } else {
+                activeWordChip = el;
+                el.classList.add('ring-4', 'ring-[var(--accent)]');
+            }
+        }
+
+        function clickDropZone(dz) {
+            if (!activeWordChip) return;
+            if (dz.children.length > 0) return; 
+            validateDrop(activeWordChip, dz);
+            activeWordChip.classList.remove('ring-4', 'ring-[var(--accent)]');
+            activeWordChip = null;
+        }
+
+        function dropVocab(ev, dz) {
+            ev.preventDefault();
+            dz.classList.remove('drag-over');
+            const data = ev.dataTransfer.getData("text");
+            if (data) {
+                const el = document.getElementById(data);
+                if (el && !el.classList.contains('correct')) {
+                    if (dz.children.length > 0) return;
+                    validateDrop(el, dz);
+                }
+            }
+        }
+
+        function validateDrop(chip, dz) {
+            dz.appendChild(chip);
+            if (chip.dataset.match === dz.dataset.match) {
+                chip.classList.add('correct');
+                chip.draggable = false;
+                dz.classList.add('border-green-500', 'bg-green-500/10');
+                dz.style.borderColor = '#10b981';
+                triggerPraise("MATCH!");
+                
+                const slide = dz.closest('.slide');
+                if (slide) {
+                    const allZones = slide.querySelectorAll('.drop-zone');
+                    const allFilled = Array.from(allZones).every(z => z.children.length > 0 && z.children[0].classList.contains('correct'));
+                    
+                    if (allFilled) {
+                        setTimeout(() => {
+                            const bank = slide.querySelector('[id$="-bank"]');
+                            if (bank && bank.dataset.finalq) {
+                                showFollowUp(bank.dataset.finalq, bank.dataset.finals || '');
+                            } else {
+                                const chipsWithFollowup = Array.from(slide.querySelectorAll('.word-chip[data-followup]')).filter(c => c.dataset.followup && c.dataset.followup.trim() !== '');
+                                if (chipsWithFollowup.length > 0) {
+                                    const randomChip = chipsWithFollowup[Math.floor(Math.random() * chipsWithFollowup.length)];
+                                    showFollowUp(randomChip.dataset.followup, randomChip.dataset.starter);
+                                }
+                            }
+                        }, 1200);
+                    }
+                }
+            } else {
+                chip.classList.add('wrong');
+                try { document.getElementById('sfx-error').play(); } catch(e){}
+                setTimeout(() => {
+                    chip.classList.remove('wrong');
+                    const bank = document.getElementById(chip.id.split('-word-')[0] + '-bank');
+                    if(bank) bank.appendChild(chip);
+                }, 800);
+            }
+        }
+
+        function selectOpinion(btn, promptId) {
+            const container = btn.parentElement;
+            container.querySelectorAll('.opinion-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            const promptBox = document.getElementById(promptId);
+            if (promptBox) promptBox.classList.add('open');
+        }
+
+        function selectDilemmaOption(btn, promptId) {
+            const container = btn.closest('.dilemma-slide');
+            container.querySelectorAll('.dilemma-btn').forEach(b => {
+                b.classList.remove('selected', 'border-[var(--accent)]', 'border-[var(--secondary)]', 'text-[var(--accent)]', 'text-[var(--secondary)]', 'shadow-[0_0_30px_var(--accent-glow)]', 'shadow-[0_0_30px_rgba(200,150,50,0.5)]');
+                b.style.transform = 'scale(0.95)';
+                b.style.opacity = '0.5';
+            });
+            btn.classList.add('selected');
+            // Re-apply the hover styles statically since it is selected
+            btn.style.borderColor = 'var(--accent)';
+            btn.style.color = 'var(--accent)';
+            btn.style.transform = 'scale(1.05)';
+            btn.style.opacity = '1';
+            
+            const promptBox = document.getElementById(promptId);
+            if (promptBox) promptBox.classList.add('open');
+            
+            const nextBtn = container.querySelector('.next-dilemma-btn');
+            if (nextBtn) nextBtn.classList.remove('hidden');
+        }
+
+        function nextDilemma(slideId, currentIdx) {
+            const current = document.getElementById(`dilemma-${slideId}-${currentIdx}`);
+            const next = document.getElementById(`dilemma-${slideId}-${currentIdx + 1}`);
+            if (current && next) {
+                current.classList.remove('opacity-100', 'z-10', 'translate-x-0');
+                current.classList.add('opacity-0', 'z-0', '-translate-x-20', 'pointer-events-none');
+                next.classList.remove('opacity-0', 'z-0', 'translate-x-20', 'pointer-events-none');
+                next.classList.add('opacity-100', 'z-10', 'translate-x-0');
+            }
+        }
+
+        const fuModal = document.getElementById('followup-modal');
+        function showFollowUp(q, s) {
+            document.getElementById('fu-q').innerText = q;
+            document.getElementById('fu-s').innerText = "> " + s;
+            fuModal.classList.remove('translate-y-full');
+        }
+        function closeFollowUp() {
+            fuModal.classList.add('translate-y-full');
+        }
+
+        // --- TRANSCRIPT CLICK ---
+        function revealWord(el) {
+            el.classList.add('revealed');
+            const box = document.getElementById('ts-speaking-box');
+            const q = document.getElementById('ts-q');
+            const s = document.getElementById('ts-s');
+            const pt = document.getElementById('ts-pt');
+            
+            q.innerText = el.dataset.q;
+            s.innerText = "> " + el.dataset.s;
+            pt.innerText = el.dataset.pt;
+            
+            box.classList.remove('hidden');
+            setTimeout(() => box.classList.remove('opacity-0'), 50);
+        }
+
+        // --- QUIZ SYSTEM ---
+        function handleQuizAnswer(btn, isCorrect) {
+            if (isCorrect) {
+                btn.classList.add('!bg-green-600', '!text-white', '!border-green-600');
+                triggerPraise("CORRECT!");
+                setTimeout(nextSlide, 2000);
+            } else {
+                btn.classList.add('!bg-red-600', '!text-white', '!border-red-600');
+                try { document.getElementById('sfx-error').play(); } catch(e){}
+                setTimeout(() => {
+                    btn.classList.remove('!bg-red-600', '!text-white', '!border-red-600');
+                }, 1000);
+            }
+        }
+
+        // --- WOW MECHANIC ---
+        function triggerStorm() {
+            const body = document.body;
+            body.classList.add('theme-ambush'); 
+            
+            const btn = document.querySelector('.tf-btn');
+            btn.innerText = "FIGHTING THE SUITORS...";
+            btn.style.pointerEvents = 'none';
+            
+            const flash = document.createElement('div');
+            flash.style.position = 'fixed'; flash.style.inset = '0';
+            flash.style.background = 'red'; flash.style.zIndex = '9999';
+            document.body.appendChild(flash);
+            
+            setTimeout(() => { flash.remove(); }, 100);
+            
+            setTimeout(() => {
+                nextSlide();
+            }, 3000);
+        }
+
+        // --- LOUSA (BOARD) SYSTEM ---
+        const lousaContainer = document.getElementById('lousa-container');
+        const canvas = document.getElementById('drawing-board');
+        const textLayer = document.getElementById('text-layer');
+        const ctx = canvas.getContext('2d');
+        
+        let isLousaActive = false;
+        let lousaTool = 'type';
+        let isDrawing = false;
+        let smartPenTimer = null;
+        
+        function resizeCanvas() {
+            const workspace = document.getElementById('lousa-workspace');
+            canvas.width = workspace ? workspace.clientWidth : window.innerWidth;
+            canvas.height = workspace ? workspace.clientHeight : window.innerHeight;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function toggleDrawing() {
+            isLousaActive = !isLousaActive;
+            if(isLousaActive) {
+                lousaContainer.classList.add('open');
+                setLousaTool('type', document.getElementById('tool-type'));
+            } else {
+                lousaContainer.classList.remove('open');
+            }
+        }
+
+        function setLousaTool(tool, btnElement) {
+            lousaTool = tool;
+            document.querySelectorAll('.lousa-tool').forEach(b => {
+                b.classList.remove('bg-[var(--accent)]', 'text-black');
+                b.classList.add('bg-black', 'text-[var(--text-muted)]');
+            });
+            btnElement.classList.remove('bg-black', 'text-[var(--text-muted)]');
+            btnElement.classList.add('bg-[var(--accent)]', 'text-black');
+            
+            if(tool === 'type') {
+                canvas.style.cursor = 'text';
+                textLayer.style.pointerEvents = 'auto';
+            } else {
+                canvas.style.cursor = 'crosshair';
+                textLayer.style.pointerEvents = 'none';
+            }
+        }
+
+        function clearLousa() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            textLayer.innerHTML = '';
+        }
+
+        textLayer.addEventListener('click', (e) => {
+            if (lousaTool !== 'type') return;
+            if (e.target !== textLayer) return; 
+            
+            const input = document.createElement('div');
+            input.contentEditable = true;
+            input.className = 'absolute text-5xl md:text-6xl font-hero text-[var(--accent)] font-bold drop-shadow-[0_0_20px_black] outline-none min-w-[50px] p-2 bg-black/50 border-l-4 border-[var(--accent)] rounded';
+            input.style.left = e.offsetX + 'px';
+            input.style.top = (e.offsetY - 30) + 'px';
+            
+            textLayer.appendChild(input);
+            input.focus();
+            
+            input.addEventListener('blur', () => {
+                if(input.innerText.trim() === '') input.remove();
+                else input.classList.remove('bg-black/50', 'border-l-4'); 
+            });
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            if(lousaTool === 'type') return;
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+            
+            ctx.lineWidth = lousaTool === 'smart' ? 8 : 6;
+            ctx.strokeStyle = lousaTool === 'smart' ? '#fbbf24' : '#ef4444'; 
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = ctx.strokeStyle;
+            
+            if(lousaTool === 'smart') {
+                clearTimeout(smartPenTimer);
+            }
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if(!isDrawing || lousaTool === 'type') return;
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+            if(lousaTool === 'smart') {
+                smartPenTimer = setTimeout(() => {
+                    canvas.style.transition = 'opacity 1s';
+                    canvas.style.opacity = '0';
+                    setTimeout(() => {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        canvas.style.transition = 'none';
+                        canvas.style.opacity = '1';
+                    }, 1000);
+                }, 1500); 
+            }
+        });
+        canvas.addEventListener('mouseout', () => isDrawing = false);
+
+    </script>
+</body>
+</html>
